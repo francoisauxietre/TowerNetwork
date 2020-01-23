@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     private bool isConnecting = false;
     //permet d'etre sur que quand quelqu"un se connecte au jeu il a bien la derniere version du jeu que l'on a en cours
     private const string GameVersion = "0.1";
-    private const int MaxPlayersPerRoom = 3;
+    private const int MaxPlayersPerRoom = 2;
     private string roomName = "towerDefenseRoom1";
 
     //nouvelle facon de mettre la methode en anonyme en c#
