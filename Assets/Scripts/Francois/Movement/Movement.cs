@@ -1,22 +1,21 @@
 ﻿using Photon.Pun;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
- [RequireComponent(typeof(CharacterController))]
+
+    [RequireComponent(typeof(CharacterController))]
     public class Movement : MonoBehaviourPun
     {
-        private CharacterController myCharacterController = null;
         [SerializeField] private float movementSpeed = 0f;
 
-        // Start is called before the first frame update
-        void Start()
+        private CharacterController controller = null;
+        private Transform mainCameraTransform = null;
+
+        private void Start()
         {
-        myCharacterController = GetComponent<CharacterController>();
+            controller = GetComponent<CharacterController>();
+            mainCameraTransform = Camera.main.transform;
         }
 
-        // Update is called once per frame
         void Update()
         {
             if (photonView.IsMine)
@@ -27,16 +26,29 @@ using UnityEngine;
 
         private void TakeInput()
         {
-            var movemnent = new Vector3
+            var movement = new Vector3
             {
                 x = Input.GetAxisRaw("Horizontal"),
                 y = 0f,
-                z = Input.GetAxisRaw("Vertical")
-
+                z = Input.GetAxisRaw("Vertical"),
             }.normalized;
-        //throw new NotImplementedException();
-        myCharacterController.SimpleMove(movemnent * movementSpeed);
+
+            Vector3 forward = mainCameraTransform.forward;
+            Vector3 right = mainCameraTransform.right;
+
+            forward.y = 0f;
+            right.y = 0f;
+
+            forward.Normalize();
+            right.Normalize();
+
+            Vector3 calculatedMovement = (forward * movement.z + right * movement.x).normalized;
+
+            if (calculatedMovement != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(calculatedMovement);
+            }
+
+            controller.SimpleMove(calculatedMovement * movementSpeed);
         }
     }
-
-

@@ -8,46 +8,35 @@ using UnityEngine.UI;
 
 public class PlayerNameInput : MonoBehaviour
 {
-
     [SerializeField] private TMP_InputField nameInputField = null;
     [SerializeField] private Button continueButton = null;
 
-    private const string playerPrefsNameKey = "playerName";
+    private const string PlayerPrefsNameKey = "PlayerName";
 
+    private void Start() => SetUpInputField();
 
-    // Start is called before the first frame update
-    void Start()
+    private void SetUpInputField()
     {
-        setUpInputField();
-    }
+        if (!PlayerPrefs.HasKey(PlayerPrefsNameKey)) { return; }
 
-    private void setUpInputField()
-    {
-        if (!PlayerPrefs.HasKey(playerPrefsNameKey)) { return; }
-        string defaultName = PlayerPrefs.GetString(playerPrefsNameKey);
+        string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
+
         nameInputField.text = defaultName;
-        setPlayerName(defaultName);
-       // throw new NotImplementedException();
+
+        SetPlayerName(defaultName);
     }
 
-    public void setPlayerName(string defaultName)
+    public void SetPlayerName(string name)
     {
-        continueButton.interactable = !string.IsNullOrEmpty(defaultName);
-        //throw new NotImplementedException();
-        Debug.Log("bouton");
+        continueButton.interactable = !string.IsNullOrEmpty(name);
     }
 
-    public void savePlayerName()
+    public void SavePlayerName()
     {
         string playerName = nameInputField.text;
-        //enregistrement chez photon
-        Debug.Log("saveplayer");
+
         PhotonNetwork.NickName = playerName;
 
-        //ajout aplayerprefs pour ne pas a avoir a le refaire a achaque fois
-        PlayerPrefs.SetString(playerPrefsNameKey, playerName);
-
+        PlayerPrefs.SetString(PlayerPrefsNameKey, playerName);
     }
-
-  
 }
